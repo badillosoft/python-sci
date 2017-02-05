@@ -1,0 +1,12 @@
+["nombre", "edad", "sexo", "peso"]
+
+["alberto", 23, "Hombre", 123]
+
+["bere", 45, "Mujer", 31]
+
+...
+
+{
+    "apple": "manzana",
+    "colores": ["rojo", "azul"]
+}
