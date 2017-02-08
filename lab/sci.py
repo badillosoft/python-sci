@@ -27,7 +27,7 @@ def clean_end_spaces(s):
 	return aux
 
 def range_xl(filename, sheet_name, cell_range):
-    wb = load_workbook(filename)
+    wb = load_workbook(filename, data_only=True)
     ws = wb[sheet_name]
     cells = ws[cell_range]
     return cells
