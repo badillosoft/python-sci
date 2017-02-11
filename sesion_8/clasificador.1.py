@@ -20,12 +20,20 @@ def tdatoY(paciente):
 X = sci.data_map(datos, tdatoX)
 Y = sci.data_map(datos, tdatoY)
 
-print "ok"
-
 from sklearn.neural_network import MLPClassifier
 
-clr = MLPClassifier()
+clf = MLPClassifier()
 
-clr.fit(X, Y)
+clf.fit(X, Y)
 
-print clf.predict([[1, 1, 0, 1]])
+Yp = clf.predict([[1, 1, 0, 1], [0, 0, 0, 1]])
+
+def f(Y):
+    return {
+        "E1": "SI" if Y[0] == 1 else "NO",
+        "E2": "SI" if Y[1] == 1 else "NO"
+    }
+
+Ys = sci.data_map(Yp, f)
+
+print Ys

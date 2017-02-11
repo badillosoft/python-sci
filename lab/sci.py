@@ -141,3 +141,32 @@ def write_xl(filename, sheet_name, ini_cell, data, labels):
 			)
 			cell.value = dic[labels[j]]
 	wb.save(filename)
+
+def cat_build(data, labels):
+	return [data_map(data, lambda x: x[k]) for k in labels]
+
+from sets import Set
+
+def cat_set_build(data, labels):
+	return [list(set(data_map(data, lambda x: x[k]))) for k in labels]
+
+def cat_row_build(cats, row):
+	return [cat[row] for cat in cats]
+
+def cat_join(data, labels):
+	cats = cat_build(data, labels)
+	return [cat_row_build(cats, i) for i in range(len(data))]
+
+def cat_transform(cat_data, cat_sets):
+	new_cat_data = []
+	for cat in cat_data:
+		new_cat = []
+		for i in range(len(cat)):
+			new_cat.append(cat_sets[i].index(cat[i]))
+		new_cat_data.append(new_cat)
+	return new_cat_data
+
+def data_analize(data, xlabels, ylabels):
+	X = cat_join(data, xlabels)
+	Y = cat_join(data, ylabels)
+	return X, Y
