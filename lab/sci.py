@@ -170,3 +170,127 @@ def data_analize(data, xlabels, ylabels):
 	X = cat_join(data, xlabels)
 	Y = cat_join(data, ylabels)
 	return X, Y
+
+def extract_attributes(content, i):
+	text = ""
+	while i < len(content):
+		c = content[i]
+
+		if c == "<" or c == ">":
+			break
+
+		text += c
+		i += 1
+
+	return [text], i
+
+def extract_name(content, i):
+	name = ""
+	while i < len(content):
+		c = content[i]
+
+		if c == "<" or c == " " or c == ">":
+			break
+
+		name += c
+		i += 1
+	return name, i
+
+def extract_tag(content, i, text):
+	state = "name"
+	i += 1
+	name = ""
+	data = ""
+	attributes = []
+	while i < len(content):
+		c = content[i]
+
+		if c == ">":
+			i += 1
+			state = "correct" if state != "name" else "error"
+			break
+		if c == "/" and state != "name":
+			state = "close"
+			i += 2
+			break
+		if c == "<":
+			state = "incomplete"
+			break
+
+		if state == "name":
+			name, i = extract_name(content, i)
+			attributes, i = extract_attributes(content, i)
+			state = "into"
+			continue
+
+		data += c
+		i += 1
+
+	tag = {
+		"name": name,
+		"attributes": attributes,
+		"data": data,
+		"text": text
+	}
+	return tag, i, state
+
+def search_tag(tags, name, i):
+	oname = name[1:]
+	pos = -1
+	sub = 0
+	while i < len(tags):
+		if tags[i]["name"] == oname:
+			sub += 1
+		if tags[i]["name"] == name:
+			if sub == 0:
+				pos = i
+				break
+			sub -= 1
+		i += 1
+	return pos
+
+def html_tree(tags, i = 0):
+	nodes = []
+	while i < len(tags):
+		name = tags[i]["name"]
+		search_name = "/%s" % name
+		j = search_tag(tags, search_name, i + 1)
+		# print "TAG %s (%d -> %d)" % (name, i, j)
+		if j >= 0:
+			# print "INTIAL TAG: %s" % name
+			# print "END TAG: %s" % search_name
+			sub_tags = tags[i + 1: j]
+			# print "SUB TAGS: ", sub_tags
+			children = html_tree(sub_tags)
+			nodes.append({
+				"tag": tags[i],
+				"close_tag": tags[j],
+				"children": children
+			})
+			i = j
+			continue
+		if name[0] == "/":
+			i += 1
+			continue
+		nodes.append({
+			"tag": tags[i]
+		})
+		i += 1
+	return nodes
+
+def html_tags(content):
+	state = None
+	tags = []
+	data = ""
+	pos = 0
+	while pos < len(content):
+		c = content[pos]
+		if c == "<":
+			tag, pos, state = extract_tag(content, pos, data)
+			tags.append(tag)
+			# print "TAG: %s : %s (%d)" %(str(tag), state, pos)
+			data = ""
+			continue
+		data += c
+		pos += 1
+	return tags
