@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 # are the lat/lon values of the lower left and upper right corners
 # of the map.
 # resolution = 'c' means use crude resolution coastlines.
-m = Basemap(projection='cea',llcrnrlat=-50,urcrnrlat=50,\
-            llcrnrlon=-120,urcrnrlon=60,resolution='c')
+m = Basemap(projection='cea',llcrnrlat=-90,urcrnrlat=90,\
+            llcrnrlon=-180,urcrnrlon=180,resolution='c')
 
 m.drawcoastlines()
 
