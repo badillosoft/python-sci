@@ -26,5 +26,5 @@ for a in range(33):
 		shadow=True, startangle=90)
 	
 	nombre_region = json_hombres["MetaData"]["Region"]
-	nombre_archivo = "%s. %s.png" % (area, nombre_region.replace(",", " - "))
+	nombre_archivo = "img_a1/%s. %s.png" % (area, nombre_region.replace(",", " - "))
 	plt.savefig(nombre_archivo)
